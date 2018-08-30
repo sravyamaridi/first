@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become: yes
+  tasks :
+  - name: update Debian cache 
+    apt:
+      update_cache: yes
+    when: ansible_os_family == "Debian" 
+  - name: update Redhat cache
+    yum:
+      name: '*'
+      update_cache: yes
+      state: present
+    when: ansible_os_family == "RedHat"
+  - name: install multiple packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - tree
+      - wget
+      - nano
+    when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
